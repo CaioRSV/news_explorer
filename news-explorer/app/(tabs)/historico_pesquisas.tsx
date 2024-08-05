@@ -44,7 +44,7 @@ const HistoricoPesquisas = () => {
         if (!isValueExist) {
           // Store the new value if it does not exist
           const timestampKey = Date.now().toString(); // Ensure unique key
-          await AsyncStorage.setItem(timestampKey, timestampKey);
+          await AsyncStorage.setItem(timestampKey, value);
         }
       } catch (e) {
         console.error('Error storing data', e);
@@ -72,12 +72,9 @@ const HistoricoPesquisas = () => {
     <ThemedView style={{ width: '100%', height: '100%', padding: 20, alignItems: 'center'}}>
         <ThemedText style={{fontSize: 20, fontWeight: 600, padding: 5, borderRadius: 10}}>Histórico de buscas</ThemedText>
         <View style={{width: '100%', height: 1, backgroundColor: 'gray', marginTop: 15, marginLeft: 15, marginRight: 15, opacity: 0.5}} />
-
-      <ThemedText onPress={() => { storeData('4')}}>STORE 1</ThemedText>
       {searchList.map((item, index) => (
         <ThemedText key={index}>{item[1]}</ThemedText>
       ))}
-      <ThemedText onPress={() => { clearStorage();}}>CLEAR</ThemedText>
     </ThemedView>
   );
 };
