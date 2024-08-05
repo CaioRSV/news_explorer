@@ -46,32 +46,7 @@ interface Article {
 
 export default function HomeScreen() {
   const [articleList, setArticleList] = useState<Article[]>();
-
-  // const [articleList, setArticleList] = useState<Article[]>([
-  //   {
-	// 		"source": {
-	// 			"id": "google-news",
-	// 			"name": "Google News"
-	// 		},
-	// 		"author": "Splash",
-  //     "description": "DOSAIDASOIDASOIDAOSIDOADOSAIDASOIDASOIDAOSIDOADOSAIDASOIDASOIDAOSIDOA",
-	// 		"title": "Hospital monta 'plano' para evitar vazamentos sobre saúde de Silvio Santos - Splash",
-	// 		"url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPdExpWFhwc2ZIT19ncDZQa01QdXNBdjA2TWxnSU9WVWJKRTJBMXJyWkx6ZmNfb2pRQU0yQUkxYWMwWFpmQklTVWJqelpib1ZmWVlYa2kwYnFkTDF0X1A1UDloOEVfQjBmWTNERkZNQnU5Z0tEdnJQa1UycGxkMGQybXl3?oc=5",
-	// 		"publishedAt": "2024-08-04T12:26:58Z",
-	// 	},
-  //   {
-	// 		"source": {
-	// 			"id": "google-news",
-	// 			"name": "Google News"
-	// 		},
-	// 		"author": "Spla222222",
-	// 		"title": "HADSADSADSADSADAS",
-	// 		"url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPdExpWFhwc2ZIT19ncDZQa01QdXNBdjA2TWxnSU9WVWJKRTJBMXJyWkx6ZmNfb2pRQU0yQUkxYWMwWFpmQklTVWJqelpib1ZmWVlYa2kwYnFkTDF0X1A1UDloOEVfQjBmWTNERkZNQnU5Z0tEdnJQa1UycGxkMGQybXl3?oc=5",
-	// 		"publishedAt": "2024-08-04T12:23:58Z",
-	// 	}
-  // ]);
-
-
+  
   useEffect(() => {
     fetchTopInfo();
   })
