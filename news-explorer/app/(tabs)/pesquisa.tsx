@@ -27,6 +27,24 @@ function formatISODate(isoDate:string) {
   return `${day}/${month}/${year} (${hours}h${minutes}m)`;
 }
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const storeData = async (value: string) => {
+  try {
+    const keys = await AsyncStorage.getAllKeys();
+    const result = await AsyncStorage.multiGet(keys);
+
+    const isValueExist = result.some(([key, storedValue]) => storedValue === value);
+
+    if (!isValueExist) {
+      const timestampKey = Date.now().toString(); // Ensure unique key
+      await AsyncStorage.setItem(timestampKey, value);
+    }
+  } catch (e) {
+    console.error('Error storing data', e);
+  }
+};
+
 const copyToClipboard = async (value:string) => {
   await Clipboard.setStringAsync(value);
 };
@@ -54,11 +72,11 @@ export default function TabTwoScreen() {
   
   useEffect(() => {
     if(searchString){
-      fetchTopInfo();
+      fetchInfo();
     }
   }, [articleList])
 
-  const fetchTopInfo = async () => {
+  const fetchInfo = async () => {
     setLoading(true);
     await fetch(`https://newsapi.org/v2/everything?q=${searchString}&apiKey=${process.env.EXPO_PUBLIC_NEWS_KEY}`)
       .then(res => {
@@ -73,6 +91,14 @@ export default function TabTwoScreen() {
       setLoading(false);
   }
 
+  const handleSearchPress = () => {
+    fetchInfo();
+    if(searchString){
+      storeData(searchString);
+    }
+
+  }
+
   return (
       <ThemedView style={{width: '100%', height: '100%', flex: 1, alignItems: 'center', paddingTop: 50, paddingLeft: 15, paddingRight: 15}} >
         <View style={{width: '100%', flexDirection: 'row', gap: 10}}>
@@ -80,7 +106,7 @@ export default function TabTwoScreen() {
             onChangeText={(e)=>{setSearchString(e)}}
             style={{flex: 1, backgroundColor: '#DEEBEA', fontSize: 20, padding: 15, borderRadius: 10}}></TextInput>
           <TouchableOpacity 
-            onPress={()=>{fetchTopInfo()}}
+            onPress={()=>{handleSearchPress()}}
             style={{flex: 0.2, padding: 15, borderRadius: 10, backgroundColor: '#00A2E8', justifyContent: 'center', alignItems: 'center'}}>
             <Entypo name="magnifying-glass" size={28} color="white" />
           </TouchableOpacity>

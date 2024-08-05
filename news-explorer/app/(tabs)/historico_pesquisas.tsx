@@ -22,7 +22,7 @@ const HistoricoPesquisas = () => {
       mutableResult.sort((a, b) => {
         const valueA = parseInt(a[1] || '0', 10);
         const valueB = parseInt(b[1] || '0', 10);
-        return valueB - valueA;
+        return valueA - valueB;
       });
 
       setSearchList(mutableResult.slice(0,15));
@@ -34,18 +34,12 @@ const HistoricoPesquisas = () => {
 
   const storeData = async (value: string) => {
       try {
-        // Fetch all keys and values from AsyncStorage
         const keys = await AsyncStorage.getAllKeys();
         const result = await AsyncStorage.multiGet(keys);
-    
-        // Check if the value already exists
-        const isValueExist = result.some(([key, storedValue]) => storedValue === value);
-    
-        if (!isValueExist) {
-          // Store the new value if it does not exist
-          const timestampKey = Date.now().toString(); // Ensure unique key
-          await AsyncStorage.setItem(timestampKey, value);
-        }
+
+        const timestampKey = Date.now().toString(); // Ensure unique key
+        await AsyncStorage.setItem(timestampKey, value);
+
       } catch (e) {
         console.error('Error storing data', e);
       }
