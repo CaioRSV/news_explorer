@@ -95,13 +95,14 @@ export default function TabTwoScreen() {
   const [languageFilter, setLanguageFilter] = useState<keyof CodeToNameType>();
 
   
-  useEffect(() => {
-    if(searchString){
-      fetchInfo();
-    }
-  }, [articleList])
+  // useEffect(() => {
+  //   if(searchString){
+  //     fetchInfo();
+  //   }
+  // }, [articleList])
 
   const fetchInfo = async () => {
+    setArticleList(undefined);
     setLoading(true);
     await fetch(`https://newsapi.org/v2/everything?q=${searchString}${languageFilter?`&language=${languageFilter}`:''}&apiKey=${process.env.EXPO_PUBLIC_NEWS_KEY}`)
       .then(res => {
@@ -181,7 +182,7 @@ export default function TabTwoScreen() {
                 </View>
               :
               articleList.map(item => (
-                <ThemedView key={item.publishedAt+item.author} style={{
+                <ThemedView key={item.publishedAt+item.author+item.title+item.url} style={{
                   marginBottom: 20,
                   borderWidth: 1,
                   borderRadius: 10,
