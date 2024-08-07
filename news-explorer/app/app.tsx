@@ -34,8 +34,16 @@ export default function App() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       {userData ? (
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack 
+          screenOptions={{
+            animation: 'fade',
+            customAnimationOnGesture: true,
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false, 
+            animation: 'fade',
+            customAnimationOnGesture: true
+            }} />
           <Stack.Screen name="+not-found" />
         </Stack>
       ) : (

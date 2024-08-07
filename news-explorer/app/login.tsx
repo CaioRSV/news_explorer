@@ -10,10 +10,12 @@ import { useUserDataContext } from '@/contexts/userData';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { Easing, useSharedValue, useAnimatedStyle, withTiming, withRepeat } from 'react-native-reanimated';
+import { useTheme } from '@react-navigation/native';
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 export default function LoginComponent() {
+  const { colors } = useTheme();
 
   const colorScheme = useColorScheme();
 
@@ -58,12 +60,19 @@ export default function LoginComponent() {
         style={[{position: 'absolute', width: '100%', height: '100%'},fadeInStyle]}
     >
         <LinearGradient 
-        colors = {['white', '#DEEBEA']}
+        colors = {
+          colors.text == 'rgb(28, 28, 30)'
+            ?
+            ['white', 'rgb(222, 235, 234)']
+            :
+            ['rgb(42, 46, 46)', 'rgb(32, 36, 36)']
+          
+          }
         style={{width: '100%', height: '100%', flex: 1, justifyContent: 'center', alignItems: 'center', gap: 40, 
         backgroundColor: '#F7F7F7'
         }}>
 
-            <Text style={{fontSize: 25}}>News Explorer</Text>
+            <Text style={{fontSize: 25, color: colors.text, fontFamily: 'SpaceMono'}}>News Explorer</Text>
 
 
             <View style={{width: 200, maxHeight: 200, borderRadius: 100,
@@ -71,8 +80,8 @@ export default function LoginComponent() {
             }}>
                 {/* <Ionicons name="newspaper" size={120} style={{color: colorScheme ?? 'light'}}/> */}
                 <AnimatedImage
-                    source={{ uri: 'https://i.imgur.com/2Mr2MWP.png' }}
-                    style={[{width: 145, height: 145}, animatedStyle]}
+                    source={{ uri: `${colors.text=='rgb(28, 28, 30)'?'https://i.imgur.com/2Mr2MWP.png':'https://i.imgur.com/7GhN7NH.png'}`}}
+                    style={[{width: 145, height: 145, opacity: colors.text=='rgb(28, 28,30)'?1:0.9}, animatedStyle]}
                 />
             </View>
             
@@ -82,7 +91,7 @@ export default function LoginComponent() {
                         <TouchableOpacity onPress={()=>{setUserData('tempUser')}}
                             style={{padding: 15, backgroundColor: 'rgba(0, 162, 232, 0.1)', borderRadius: 15}}
                         >
-                            <Text style={{color: 'black', fontSize: 20}}>Entrar como visitante</Text>
+                            <Text style={{fontSize: 20, color: colors.text}}>Entrar como visitante</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

@@ -7,8 +7,10 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 import * as Clipboard from 'expo-clipboard';
+import {Picker} from '@react-native-picker/picker';
 
 import { useState, useEffect } from 'react';
+import { useTheme } from '@react-navigation/native';
 
 
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -64,11 +66,34 @@ interface Article {
 }
 
 export default function TabTwoScreen() {
+  const { colors } = useTheme();
+
   const [articleList, setArticleList] = useState<Article[]>();
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const [searchString, setSearchString] = useState<string>();
+
+  type CodeToNameType = {
+    pt: string[];
+    en: string[];
+    es: string[];
+    fr: string[];
+    ru: string[];
+    it: string[];
+  };
+
+  const codeToName = {
+    "pt" : ["Português", "🇧🇷"],
+    "en" : ["Inglês","🇺🇸"],
+    "es" : ["Espanhol", "🇪🇸"],
+    "fr" : ["Francês", "🇫🇷"],
+    "ru": ["Russo", "🇷🇺"],
+    "it" : ["Italiano", "🇮🇹"]
+  }
+
+  const [languageFilter, setLanguageFilter] = useState<keyof CodeToNameType>();
+
   
   useEffect(() => {
     if(searchString){
@@ -78,7 +103,7 @@ export default function TabTwoScreen() {
 
   const fetchInfo = async () => {
     setLoading(true);
-    await fetch(`https://newsapi.org/v2/everything?q=${searchString}&apiKey=${process.env.EXPO_PUBLIC_NEWS_KEY}`)
+    await fetch(`https://newsapi.org/v2/everything?q=${searchString}${languageFilter?`&language=${languageFilter}`:''}&apiKey=${process.env.EXPO_PUBLIC_NEWS_KEY}`)
       .then(res => {
         if(!res.ok){
           return false;
@@ -86,7 +111,9 @@ export default function TabTwoScreen() {
         return res.json();
       })
       .then(data => {
-        setArticleList(data.articles.slice(0,50));
+        if(data.articles){
+          setArticleList(data.articles.filter((item: Article) => item.title != null ? !item.title.includes("[Removed]") : false).slice(0,50));
+        }
       })
       setLoading(false);
   }
@@ -104,12 +131,39 @@ export default function TabTwoScreen() {
         <View style={{width: '100%', flexDirection: 'row', gap: 10}}>
           <TextInput 
             onChangeText={(e)=>{setSearchString(e)}}
-            style={{flex: 1, backgroundColor: '#DEEBEA', fontSize: 20, padding: 15, borderRadius: 10}}></TextInput>
+            style={{flex: 1, color: colors.text, backgroundColor: colors.text=="rgb(28, 28, 30)"?'rgba(222, 235, 234,0.8)':'rgba(222, 235, 234,0.1)', fontSize: 20, padding: 15, borderRadius: 10}}>
+            </TextInput>
           <TouchableOpacity 
             onPress={()=>{handleSearchPress()}}
-            style={{flex: 0.2, padding: 15, borderRadius: 10, backgroundColor: '#00A2E8', justifyContent: 'center', alignItems: 'center'}}>
+            style={{flex: 0.2, padding: 15, borderRadius: 10, backgroundColor: colors.text=="rgb(28, 28, 30)"?'rgba(0, 162, 232, 1)':"rgba(0, 162, 232, 0.5)", justifyContent: 'center', alignItems: 'center'}}>
             <Entypo name="magnifying-glass" size={28} color="white" />
           </TouchableOpacity>
+        </View>
+
+        <Text style={{marginTop: languageFilter?8:0}}>
+          {languageFilter? `${codeToName[languageFilter][1]}` : ""}
+        </Text>
+
+        <View style={{height: 10, overflow: 'visible'}}>
+
+          <Picker
+            style={{width: 48, top: languageFilter?-15:-21}}
+            dropdownIconColor = {colors.text}
+            selectedValue={languageFilter}
+            onValueChange={(itemValue, itemIndex) =>
+              setLanguageFilter(itemValue)
+            }>
+            <Picker.Item label={`${codeToName.pt[0]} ${codeToName.pt[1]}`} value="pt" />
+            <Picker.Item label={`${codeToName.en[0]} ${codeToName.en[1]}`} value="en" />
+            <Picker.Item label={`${codeToName.es[0]} ${codeToName.es[1]}`} value="es" />
+            <Picker.Item label={`${codeToName.ru[0]} ${codeToName.ru[1]}`} value="ru" />
+            <Picker.Item label={`${codeToName.fr[0]} ${codeToName.fr[1]}`} value="fr" />
+            <Picker.Item label={`${codeToName.it[0]} ${codeToName.it[1]}`} value="it" />
+            <Picker.Item label={`Qualquer idioma`} value={undefined} />
+
+          
+          </Picker>
+
         </View>
         <View style={{width: '100%', height: 1, backgroundColor: 'gray', marginTop: 15, marginLeft: 15, marginRight: 15, opacity: 0.5}} />
         <ScrollView style={{flex: 1, width: '100%', marginTop: 15}}>
@@ -123,8 +177,7 @@ export default function TabTwoScreen() {
                 </View>
                 :
                 <View style={{width: '100%', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                  <ThemedText style={{textAlign: 'center'}}>Pesquise por palavras-chave para encontrar manchetes que as incluam</ThemedText>
-
+                  <ThemedText style={{textAlign: 'center', color: 'gray'}}>Pesquise por palavras-chave para encontrar manchetes que as incluam</ThemedText>
                 </View>
               :
               articleList.map(item => (
@@ -138,7 +191,7 @@ export default function TabTwoScreen() {
                   flexDirection: 'row',
                   alignItems: 'center',
                   gap: 5, 
-                  backgroundColor: '#F3FFFE'
+                  backgroundColor: colors.text=="rgb(1,1,1)"?'rgba(243, 255, 254,1)':'rgba(243, 255, 254,0.1)'
                   }}>
                   <TouchableOpacity style={{
                     height: '100%',
@@ -165,11 +218,11 @@ export default function TabTwoScreen() {
                         width: '100%',
                         overflow: 'hidden',
                         padding: 5,
-                        backgroundColor: '#F3FFFE'
+                        backgroundColor: colors.text=="rgb(1,1,1)"?'rgba(243, 255, 254,1)':'rgba(243, 255, 254,0)'
                       }}
                     >
-                      <Text adjustsFontSizeToFit style={{textAlign: 'center', marginBottom: 15, fontWeight: '600', marginTop: 5, color: 'black'}}>{item.title}</Text>
-                      <Text adjustsFontSizeToFit style={{textAlign: 'center', flex: (!item.source.name && !item.author && !item.publishedAt) ? 1 : 0,marginBottom: 15, color: 'black'}}>
+                      <Text adjustsFontSizeToFit style={{textAlign: 'center', marginBottom: 15, fontWeight: '600', marginTop: 5, color: colors.text}}>{item.title}</Text>
+                      <Text adjustsFontSizeToFit style={{textAlign: 'center', flex: (!item.source.name && !item.author && !item.publishedAt) ? 1 : 0,marginBottom: 15, color: colors.text}}>
                         {`${item.source.name}`}
                         {`${item.source.name && item.author ? " | " : ""}`}
                         {`${item.author}`}
@@ -178,7 +231,7 @@ export default function TabTwoScreen() {
                         {`${!item.source.name && !item.author && !item.publishedAt ? "Nenhuma descrição informada" : ""}`}
                         
                         </Text>
-                      <Text adjustsFontSizeToFit style={{textAlign: 'center',marginBottom: item.description?15:0, overflow: 'scroll'}}>{item.description?.slice(0,200)}</Text>
+                      <Text adjustsFontSizeToFit style={{textAlign: 'center',marginBottom: item.description?15:0, overflow: 'scroll', color: colors.text}}>{item.description?.slice(0,200)}</Text>
 
                       <TouchableOpacity onPress={()=>{Linking.openURL(item.url)}}>
                         <Text adjustsFontSizeToFit style={{textAlign: 'center', justifyContent: 'center', alignItems: 'flex-end', color: '#00A2E8'}}>{item.url.length>50? item.url.slice(0,60)+'...' : item.url}</Text>

@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 
 
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTheme } from '@react-navigation/native';
 
 
 function formatISODate(isoDate:string) {
@@ -44,7 +45,10 @@ interface Article {
   urlToImage?: string
 }
 
+
 export default function HomeScreen() {
+  const { colors } = useTheme();
+  
   const [articleList, setArticleList] = useState<Article[]>();
   
   useEffect(() => {
@@ -66,7 +70,7 @@ export default function HomeScreen() {
 
   return (
       <ThemedView style={{width: '100%', height: '100%', flex: 1, alignItems: 'center', paddingTop: 50, paddingLeft: 15, paddingRight: 15}} >
-        <Text style={{fontSize: 20, fontWeight: 600, backgroundColor: '#DEEBEA', padding: 5, borderRadius: 10, color: 'black'}}>Manchetes relevantes no Brasil</Text>
+        <ThemedText style={{fontSize: 20, fontWeight: 600, padding: 5, borderRadius: 10}}>Manchetes relevantes no Brasil</ThemedText>
         <View style={{width: '100%', height: 1, backgroundColor: 'gray', marginTop: 15, marginLeft: 15, marginRight: 15, opacity: 0.5}} />
         <ScrollView style={{flex: 1, width: '100%', marginTop: 15}}>
           {
@@ -87,7 +91,7 @@ export default function HomeScreen() {
                   flexDirection: 'row',
                   alignItems: 'center',
                   gap: 5, 
-                  backgroundColor: '#F3FFFE'
+                  backgroundColor: colors.text=="rgb(1,1,1)"?'rgba(243, 255, 254,1)':'rgba(243, 255, 254,0.1)'
                   }}>
                   <TouchableOpacity style={{
                     height: '100%',
@@ -114,11 +118,11 @@ export default function HomeScreen() {
                         width: '100%',
                         overflow: 'hidden',
                         padding: 5,
-                        backgroundColor: '#F3FFFE'
+                        backgroundColor: colors.text=="rgb(1,1,1)"?'rgba(243, 255, 254,1)':'rgba(243, 255, 254,0)'
                       }}
                     >
-                      <Text adjustsFontSizeToFit style={{textAlign: 'center', marginBottom: 15, fontWeight: '600', marginTop: 5, color: 'black'}}>{item.title}</Text>
-                      <Text adjustsFontSizeToFit style={{textAlign: 'center', flex: (!item.source.name && !item.author && !item.publishedAt) ? 1 : 0,marginBottom: 15, color: 'black'}}>
+                      <Text adjustsFontSizeToFit style={{textAlign: 'center', marginBottom: 15, fontWeight: '600', marginTop: 5, color: colors.text}}>{item.title}</Text>
+                      <Text adjustsFontSizeToFit style={{textAlign: 'center', flex: (!item.source.name && !item.author && !item.publishedAt) ? 1 : 0,marginBottom: 15, color: colors.text}}>
                         {`${item.source.name}`}
                         {`${item.source.name && item.author ? " | " : ""}`}
                         {`${item.author}`}
@@ -127,7 +131,7 @@ export default function HomeScreen() {
                         {`${!item.source.name && !item.author && !item.publishedAt ? "Nenhuma descrição informada" : ""}`}
                         
                         </Text>
-                      <Text adjustsFontSizeToFit style={{textAlign: 'center',marginBottom: item.description?15:0, overflow: 'scroll'}}>{item.description?.slice(0,200)}</Text>
+                      <Text adjustsFontSizeToFit style={{textAlign: 'center',marginBottom: item.description?15:0, overflow: 'scroll', color: colors.text}}>{item.description?.slice(0,200)}</Text>
 
                       <TouchableOpacity onPress={()=>{Linking.openURL(item.url)}}>
                         <Text adjustsFontSizeToFit style={{textAlign: 'center', justifyContent: 'center', alignItems: 'flex-end', color: '#00A2E8'}}>{item.url.length>50? item.url.slice(0,60)+'...' : item.url}</Text>
