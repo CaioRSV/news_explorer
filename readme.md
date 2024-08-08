@@ -11,9 +11,9 @@ O projeto está dividido em duas pastas principais:
 
 ## Funcionalidades
 
-- **Buscar Notícias da API**: Recuperar os últimos artigos de notícias de uma API de terceiros.
+- **Buscar Notícias da API**: Exibir os principais artigos de notícias recebidos da API.
 - **Pesquisa por Palavra-chave**: Pesquisar artigos de notícias com base em palavras-chave fornecidas pelo usuário.
-- **Histórico de Pesquisas**: Manter um registro das palavras-chave usadas e dos artigos de notícias encontrados.
+- **Histórico de Pesquisas**: Manter um registro das palavras-chave utilizadas nas pesquisas.
 
 ## Executando o Projeto
 
